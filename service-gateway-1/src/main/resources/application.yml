@@ -1,0 +1,65 @@
+server:
+  port: 9000
+  
+spring:
+  application:
+    name: GATEWAY
+  
+    
+  cloud:
+    gateway:
+      routes:
+      - id: LOGIN
+        uri: lb://LOGIN
+        predicates:
+        - Method=POST
+        - Path=/auth/**
+        
+      - id: REGISTER
+        uri: lb://REGISTER
+        predicates:
+        - Method=POST,GET
+        - Path=/register/**
+        
+      - id: DASHBOARD
+        uri: lb://DASHBOARD
+        predicates:
+        - Method=GET
+        - Path=/dashboard/** 
+        filters:
+        - TokenRelay=
+        
+      - id: EMPLOYEE
+        uri: lb://EMPLOYEE
+        predicates:
+        - Method=GET
+        - Path=/employee/**
+        
+      - id: ADDRESS
+        uri: lb://ADDRESS
+        predicates:
+        - Method=GET
+        - Path=/address/**
+  
+  security:
+    oauth2:
+      client:
+        registration:
+          gateway:
+            provider: springboot
+            client-id: springboot-client
+            client-secret: 9nw5cjqy0EXkUe3mEm2QWcByshqhi9b8
+            authorization-grant-type: authorization_code
+            redirect-uri: http://localhost:8082/auth/login
+        provider:
+         springboot: 
+            issuer-uri: http://localhost:8080/realms/springboot      
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/springboot 
+          jwk-set-uri: http://localhost:8080/realms/springboot/protocol/openid-connect/certs  
+
+eureka:
+  client:
+    service-url:
+      defaultZone : http://localhost:8761/eureka/             
