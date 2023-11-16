@@ -40,6 +40,23 @@ spring:
         predicates:
         - Method=GET
         - Path=/address/**
+        
+        
+      - id: PRODUCT
+        uri: lb://PRODUCT
+        predicates:
+        - Method=GET
+        - Path=/product/**
+        filters:
+        - TokenRelay=
+        
+      - id: HOME
+        uri: lb://HOME
+        predicates:
+        - Method=GET
+        - Path=/home/**
+        filters:
+        - TokenRelay=
   
   security:
     oauth2:
